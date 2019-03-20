@@ -1,5 +1,5 @@
 ---
-title: API Reference
+title: Rolex API Description
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
