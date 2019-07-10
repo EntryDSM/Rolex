@@ -1,5 +1,15 @@
+import 'dotenv/config'
 import App from './app'
 
-const app = new App()
+(async () => {
+  const app = new App()
 
-app.listen(3000)
+  await app.listen(3000)
+
+  const redisClient = await app.getRedisClient()
+
+  // how to use redisClient
+  // console.log(await redisClient.getKey('testKey'))
+  // redisClient.setKey('testKey', 'testValue')
+  // redisClient.delKey('testKey')
+})()
