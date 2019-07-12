@@ -32,14 +32,7 @@ class RedisClient {
 
   public delKey (key: string): void {
     this.redisClient.del(key, (err, res) => {
-      if (err) {
-        console.log(err)
-      }
-      if (res === 1) {
-        console.log('redis key delete success')
-      } else {
-        console.log('redis key delete failed')
-      }
+      if (err) console.log(err)
     })
   }
 }

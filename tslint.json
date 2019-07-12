@@ -1,4 +1,6 @@
 {
   "extends": "tslint-config-standard",
-  "rules": {}
+  "rules": {
+    "semicolon": false
+  }
 }
