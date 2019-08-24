@@ -1,10 +1,10 @@
-import 'dotenv/config'
-import App from './app'
+import dotenv from 'dotenv';
+import app from './app'
 
-(async () => {
-  const app = new App()
+dotenv.config();
 
-  await app.listen(3000)
-
-  const redisClient = await app.getRedisClient()
-})()
+app().then(server => 
+  server.listen(3000, () => {
+    console.log(`server is listening on 3000 port`);
+  })  
+)
