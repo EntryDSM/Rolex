@@ -2,7 +2,7 @@ import vault, * as NodeVault from 'node-vault'
 import VaultData from '../interfaces/VaultData'
 
 class VaultClient {
-  private vaultClient: NodeVault.client
+  private vaultClient: NodeVault.Client
   private connection?: VaultData
 
   constructor () {
