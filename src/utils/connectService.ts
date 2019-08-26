@@ -2,12 +2,17 @@ import VaultClient from './vaultClient';
 import VaultData from '../interfaces/VaultData';
 import RedisClient from './redisClient';
 
-export const connectToVault = async (): Promise<VaultData> => {
-    const vaultConnection = new VaultClient();
-    return await vaultConnection.connectVault();
+const connectToVault = async (): Promise<VaultData> => {
+  const vaultConnection = new VaultClient();
+  return vaultConnection.connectVault();
 }
 
-export const ConnectToRedis = async (vaultConnection: VaultData): Promise<RedisClient> => {
-    const redisClient = new RedisClient(vaultConnection);
-    return redisClient;
+const ConnectToRedis = async (vaultConnection: VaultData): Promise<RedisClient> => {
+  const redisClient = new RedisClient(vaultConnection);
+  return redisClient;
+}
+
+export const connectServices = async () => {
+  const vaultConnection: VaultData = await connectToVault();
+  const redisConnection: RedisClient = await ConnectToRedis(vaultConnection);
 }
