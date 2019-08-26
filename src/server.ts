@@ -1,10 +1,20 @@
-import dotenv from 'dotenv';
+import nodeSchedule from 'node-schedule';
 import app from './app'
+import { port } from './config';
+import { connectServices } from './utils/connectService';
 
-dotenv.config();
+async function listening (): Promise<void> {
+  await connectServices();
+  const startMinute = new Date().getMinutes();
+  const rule = new nodeSchedule.RecurrenceRule();
+  rule.minute = startMinute - 1;
+  const batchJob = nodeSchedule.scheduleJob(rule, async () => {
+    await connectServices();
+  })
 
-app().then(server => 
-  server.listen(3000, () => {
-    console.log(`server is listening on 3000 port`);
-  })  
-)
+  app().listen(port, () => {
+    console.log(`server is listening on ${port} port`);
+  })
+}
+
+listening();
