@@ -30,7 +30,7 @@
     "tslint": "^5.17.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.5.2",
-    "node-vault": "latest"
+    "node-vault": "^0.9.11"
   },
   "dependencies": {
     "@types/dotenv": "^6.1.1",
