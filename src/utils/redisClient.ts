@@ -2,7 +2,7 @@ import redis from 'redis'
 import VaultData from '../interfaces/VaultData'
 
 class RedisClient {
-  private redisClient: redis.RedisClient
+  private redisClient: redis.RedisClient;
 
   constructor (data: VaultData) {
     this.redisClient = redis.createClient({
@@ -16,23 +16,23 @@ class RedisClient {
     return new Promise((resolve, reject) => {
       this.redisClient.get(key, (err,data) => {
         if (err) {
-          reject(err)
-          return
+          reject(err);
+          return;
         }
-        resolve(data)
+        resolve(data);
       })
     })
   }
 
   public setKey (key: string, value: string): void {
     this.redisClient.set(key, value, (err, data) => {
-      if (err) console.log(err)
+      if (err) console.log(err);
     })
   }
 
   public delKey (key: string): void {
     this.redisClient.del(key, (err, res) => {
-      if (err) console.log(err)
+      if (err) console.log(err);
     })
   }
 }

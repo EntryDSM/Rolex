@@ -4,4 +4,4 @@ interface VaultData {
   REDIS_PORT: number;
 }
 
-export default VaultData
+export default VaultData;

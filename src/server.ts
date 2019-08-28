@@ -1,10 +1,20 @@
-import 'dotenv/config'
-import App from './app'
+import nodeSchedule from 'node-schedule';
+import app from './app'
+import { port } from './config';
+import { connectServices } from './utils/connectService';
 
-(async () => {
-  const app = new App()
+async function listening (): Promise<void> {
+  await connectServices();
+  const startMinute = new Date().getMinutes();
+  const rule = new nodeSchedule.RecurrenceRule();
+  rule.minute = startMinute - 1;
+  const batchJob = nodeSchedule.scheduleJob(rule, async () => {
+    await connectServices();
+  })
 
-  await app.listen(3000)
+  app().listen(port, () => {
+    console.log(`server is listening on ${port} port`);
+  })
+}
 
-  const redisClient = await app.getRedisClient()
-})()
+listening();
