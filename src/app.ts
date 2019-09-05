@@ -1,35 +1,40 @@
 import express from 'express'
 import errorMiddleware from './middlewares/error'
+import Controller from './interfaces/controller.interface'
+import { port } from './config';
 
 class App {
   public app: express.Application;
 
-  constructor () {
+  constructor (controllers: Controller[]) {
     this.app = express();
-    this.initializeMiddleware();
+
+    this.initializeMiddlewares();
+    this.initializeControllers(controllers);
     this.initializeErrorHandler();
   }
 
-  public listen (port: number, listener: () => void) {
+  public listen () {
     this.app.set('PORT', port);
     this.app.listen(this.app.get('PORT'), () => {
       console.log(`server is listening on ${this.app.get('PORT')}`);
     })
   }
 
-  private initializeMiddleware (): void {
+  private initializeMiddlewares (): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+  }
+
+  private initializeControllers (controllers: Controller[]) {
+    controllers.forEach((controller) => {
+      this.app.use('/', controller.router)
+    })
   }
 
   private initializeErrorHandler (): void {
     this.app.use(errorMiddleware);
   }
-
 }
 
-const createApp = () => {
-  return new App();
-};
-
-export default createApp;
+export default App;

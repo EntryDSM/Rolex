@@ -1,7 +1,7 @@
 import nodeSchedule from 'node-schedule';
-import app from './app'
-import { port } from './config';
+import App from './app'
 import { connectServices } from './utils/connectService';
+import StudentController from './students/students.controller';
 
 async function listening (): Promise<void> {
   await connectServices();
@@ -12,9 +12,13 @@ async function listening (): Promise<void> {
     await connectServices();
   })
 
-  app().listen(port, () => {
-    console.log(`server is listening on ${port} port`);
-  })
+  const app = new App(
+    [
+      new StudentController()
+    ]
+  );
+
+  app.listen();
 }
 
 listening();
