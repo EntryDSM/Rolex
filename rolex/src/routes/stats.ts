@@ -3,6 +3,7 @@ import StatsController from '../controller/StatsContoller';
 
 const router = Router();
 
-router.get('/', StatsController.getApplicants);
+router.get('/applicants', StatsController.getApplicants);
+router.get('/all', StatsController.getAll);
 
 export default router;
