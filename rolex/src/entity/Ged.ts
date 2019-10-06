@@ -42,48 +42,8 @@ export class Ged_application {
     @Column({ length: "5" })
     post_code: string;
 
-    @Column({ length: "5" })
-    student_number: string;
-
-    @Column({ length: "4" })
-    graduated_year: string;
-
-    @Column({ length: "10" })
-    school_name: string;
-
-    @Column({ length: "11" })
-    school_tel: string;
-
-    volunteer_time: number;
-
-    full_cut_count: number;
-
-    period_cut_count: number;
-
-    late_count: number;
-
-    early_leave_count: number;
-
-    @Column({ length: "6" })
-    korean: string;
-
-    @Column({ length: "6" })
-    social: string;
-
-    @Column({ length: "6" })
-    history: string;
-
-    @Column({ length: "6" })
-    math: string;
-
-    @Column({ length: "6" })
-    science: string;
-
-    @Column({ length: "6" })
-    tech_and_home: string;
-
-    @Column({ length: "6" })
-    english: string;
+    @Column("decimal", { precision: 10, scale: 5 })
+    ged_average_score: number;
 
     @Column({ length: "1600" })
     self_introduction: string;

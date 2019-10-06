@@ -45,9 +45,6 @@ export class Ungraduated_application {
     @Column({ length: "5" })
     student_number: string;
 
-    @Column({ length: "4" })
-    graduated_year: string;
-
     @Column({ length: "10" })
     school_name: string;
 
