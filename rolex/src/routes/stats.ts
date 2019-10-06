@@ -5,5 +5,6 @@ const router = Router();
 
 router.get('/applicants', StatsController.getApplicants);
 router.get('/all', StatsController.getAll);
+router.get('/competition', StatsController.getCompetition);
 
 export default router;
