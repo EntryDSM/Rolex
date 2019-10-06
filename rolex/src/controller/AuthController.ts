@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import { getRepository, getConnectionManager } from "typeorm";
+import { getConnectionManager } from "typeorm";
 import { validate } from "class-validator";
 import { Admin } from "../entity/Admin"
 import { jwtSecret } from '../config/config';
