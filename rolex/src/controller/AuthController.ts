@@ -51,7 +51,12 @@ class AuthController {
     }
 
     static refresh = async (req: Request, res: Response) => {
-
+        const { admin_id } = res.locals.jwtPayload;
+        const newToken = jwt.sign(
+            { adminId: admin_id },
+            jwtSecret,
+            { expiresIn: "60m" });
+        res.status(201).json({access: newToken});
     }
 }
 
