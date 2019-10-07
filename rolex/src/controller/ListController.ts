@@ -24,27 +24,31 @@ class ListController {
             const manager = getConnectionManager().get('avengers');
             const userRepository = manager.getRepository(User);
 
-            let option, select, work;
-            await userList.forEach(async (user, index)=>{
-                option = {};
-                option.email = user["user_email"];
-                if(status==="0") option["is_paid"] = false;
-                if(status==="1") option["is_printed_application_arrived"] = false;
-                select = await userRepository.findOne({
-                    where: option,
-                    select: ["email", "exam_code", "is_printed_application_arrived", "is_final_submit", "is_paid"]
-                })
-                if(select) {
-                    select.name = user.name;
-                    if(user.is_daejeon) select.region = 'daejeon';
-                    else select.region = 'nation';
-                    select.type = user.apply_type;
-                    resultList.push(select);
-                }
-                if(index == userList.length-1) res.json(resultList);
-            });
-        } catch {
-
+            let option, select;
+            if(userList.length) {
+                await userList.forEach(async (user, index)=>{
+                    option = {};
+                    option.email = user["user_email"];
+                    if(status==="0") option["is_paid"] = false;
+                    if(status==="1") option["is_printed_application_arrived"] = false;
+                    select = await userRepository.findOne({
+                        where: option,
+                        select: ["email", "exam_code", "is_printed_application_arrived", "is_final_submit", "is_paid"]
+                    })
+                    if(select) {
+                        select.name = user.name;
+                        if(user.is_daejeon) select.region = 'daejeon';
+                        else select.region = 'nation';
+                        select.type = user.apply_type;
+                        resultList.push(select);
+                    }
+                    if(index == userList.length-1) res.status(200).json(resultList);
+                });
+            } else {
+                res.status(200).json([]);
+            }
+        } catch(e) {
+            next(e);
         }
     }
 
