@@ -47,7 +47,7 @@ class InfoController {
                         })
                         res.status(200).json({application:gred[0], user});
                     } else {
-                        res.status(200).json({email:email, submit:false});
+                        res.status(200).json({email:email});
                     }
                 }
             }
@@ -56,13 +56,31 @@ class InfoController {
         }
     }
 
-    // static changeStatus = async (req: Request, res: Response, next: NextFunction) => {
-    //     try {
-
-    //     } catch (e) {
-    //         next(e);
-    //     }
-    // }
+    static changeStatus = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { email, status } = req.query;
+            
+            const manager = getConnectionManager().get('avengers');
+            const userRepository = manager.getRepository(User);
+            if(status === "0") {
+                let user = await userRepository.findOne({
+                    where: {email: email}
+                })
+                user.is_paid = !user.is_paid;
+                await userRepository.save(user);
+                res.status(201).json("status change success");
+            } else if(status === "1") {
+                let user = await userRepository.findOne({
+                    where: {email: email}
+                })
+                user.is_printed_application_arrived = !user.is_printed_application_arrived;
+                await userRepository.save(user);
+                res.status(201).json("status change success");
+            }
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export default InfoController;
