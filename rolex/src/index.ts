@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { createConnections, getConnection } from "typeorm";
-import * as express from "express";
-import * as cors from "cors";
-import * as helmet from "helmet";
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { port } from "./config/config";
