@@ -47,7 +47,7 @@ class InfoController {
                         })
                         res.status(200).json({application:gred[0], user});
                     } else {
-                        throw new Err('Not Found application');
+                        res.status(200).json({email:email, submit:false});
                     }
                 }
             }
@@ -55,6 +55,14 @@ class InfoController {
             next(e);
         }
     }
+
+    // static changeStatus = async (req: Request, res: Response, next: NextFunction) => {
+    //     try {
+
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 }
 
 export default InfoController;
