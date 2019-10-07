@@ -8,7 +8,8 @@ const baseOptions = {
     username: DB_USER,
     password: DB_PASSWORD,
     entities: [
-        path.join(__dirname, "src/entity/**/*.ts")
+        "build/src/entity/*.js"
+        //path.join(__dirname, "src/entity/**/*.ts")
     ],
 }
 
