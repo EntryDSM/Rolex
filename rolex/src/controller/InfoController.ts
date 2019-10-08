@@ -21,11 +21,15 @@ class InfoController {
                 where: {user_email: email}
             });
             if(ungred.length) {
-                let user = await userRepository.findOne({
+                let user:User = await userRepository.findOne({
                     where: {email: ungred[0].user_email},
-                    select: ["final_score"],
+                    select: ["conversion_score"],
                 })
-                res.status(200).json({application:ungred[0], score:user});
+                if(user) {
+                    res.status(200).json({application:ungred[0], score:user.conversion_score});
+                } else {
+                    res.status(200).json({application:ungred[0], score:null});
+                }
             } else {
                 let ged = await gedRepository.find({
                     where: {user_email: email}
@@ -33,9 +37,13 @@ class InfoController {
                 if(ged.length) {
                     let user = await userRepository.findOne({
                         where: {email: ged[0].user_email},
-                        select: ["final_score"],
+                        select: ["conversion_score"],
                     })
-                    res.status(200).json({application:ged[0], score:user});
+                    if(user) {
+                        res.status(200).json({application:ged[0], score:user.conversion_score});
+                    } else {
+                        res.status(200).json({application:ged[0], score:null});
+                    }
                 } else {
                     let gred = await graduatedRepository.find({
                         where: {user_email: email}
@@ -43,9 +51,13 @@ class InfoController {
                     if(gred.length) {
                         let user = await userRepository.findOne({
                             where: {email: gred[0].user_email},
-                            select: ["final_score"],
+                            select: ["conversion_score"],
                         })
-                        res.status(200).json({application:gred[0], user});
+                        if(user) {
+                            res.status(200).json({application:gred[0], score:user.conversion_score});
+                        } else {
+                            res.status(200).json({application:gred[0], score:null});
+                        }
                     } else {
                         res.status(200).json({email:email});
                     }
