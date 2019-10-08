@@ -54,14 +54,19 @@ export class Graduated_application {
     @Column({ length: "11" })
     school_tel: string;
 
+    @Column()
     volunteer_time: number;
 
+    @Column()
     full_cut_count: number;
 
+    @Column()
     period_cut_count: number;
 
+    @Column()
     late_count: number;
 
+    @Column()
     early_leave_count: number;
 
     @Column({ length: "6" })

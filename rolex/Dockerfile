@@ -1,7 +1,9 @@
 FROM node:10
 
 ENV PORT 80
+
 ENV NODE_ENV production
+
 ENV DB_HOST $HOST
 ENV DB_PORT 3306
 ENV DB_USER root
@@ -13,11 +15,12 @@ ENV REDIS_PASSWORD $PASSWORD
 ENV REDIS_PORT 6379
 ENV JWTSECRET $JWTSECRET
 
-RUN mkdir -p /rolex
-WORKDIR /rolex
-ADD . /rolex
+COPY package.json package.json
 RUN npm install
+
+COPY . .
+RUN npm run build
 
 EXPOSE 80
 
-CMD ["npm", "run prod"]
+CMD ["node", "build/src"]

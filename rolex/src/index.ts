@@ -17,7 +17,7 @@ createConnections()
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
 
-    app.use("/", routes);
+    app.use("/api", routes);
 
     app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
         const err = new Err('Not Found');

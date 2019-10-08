@@ -17,6 +17,7 @@ export class User {
     password: string;
 
     @IsNotEmpty()
+    @Column()
     receipt_code: number;
 
     @Column("bool")
