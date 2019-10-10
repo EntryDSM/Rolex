@@ -33,7 +33,7 @@ class ListController {
                     if(status==="1") option["is_printed_application_arrived"] = false;
                     select = await userRepository.findOne({
                         where: option,
-                        select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid"]
+                        select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid"],
                     })
                     if(select) {
                         select.name = user.name;
@@ -42,6 +42,13 @@ class ListController {
                         select.type = user.apply_type;
                         resultList.push(select);
                     }
+                    resultList.sort(function(a,b) {
+                        if (a.receipt_code > b.receipt_code)
+                            return 1;
+                        if (a.receipt_code < b.receipt_code)
+                            return -1;
+                        return 0;
+                    })
                     if(index == userList.length-1) res.status(200).json(resultList);
                 });
             } else {
