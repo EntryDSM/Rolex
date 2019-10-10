@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { getConnectionManager, getRepository } from "typeorm";
+import { getConnectionManager, Between, LessThanOrEqual } from "typeorm";
 import { Ged_application } from "../entity/Ged";
 import { Graduated_application } from "../entity/Graduated";
 import { Ungraduated_application } from "../entity/Ungraduated";
+import { User } from "../entity/User";
+import e = require("express");
 
 class StatsController {
     static getApplicants = async (req: Request, res: Response, next: NextFunction) => {
@@ -116,6 +118,71 @@ class StatsController {
                 }
             })
         } catch(e) {
+            next(e);
+        }
+    }
+
+    static getUserList = async (is_daejeon:boolean, apply_type:string) => {
+        const manager = getConnectionManager().get('avengers');
+            
+        const gedRepository = manager.getRepository(Ged_application);
+        const graduatedRepository = manager.getRepository(Graduated_application);
+        const ungraduatedRepository = manager.getRepository(Ungraduated_application);
+         
+        let result = [];
+
+        let ged;
+        ged = await gedRepository.find({
+            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            select: ["user_email"]
+        });
+        let gred = await graduatedRepository.find({
+            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            select: ["user_email"]
+        });
+        let ungred = await ungraduatedRepository.find({
+            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            select: ["user_email"]
+        });
+        result = ged.concat(gred, ungred);
+        return result;
+    }
+
+    static countingUser = async (region:boolean, type:string, result:object) => {
+        const manager = getConnectionManager().get('avengers');
+        const userRepository = manager.getRepository(User);
+
+        let users = await StatsController.getUserList(region, type);
+        
+        for(let score=150; score>60; score-=10) {
+            let option = [];
+            if(score > 70) {
+                for(let k=0; k<users.length; k++) {
+                    option.push({email: users[k].user_email ,conversion_score: Between(score-9, score)})
+                }
+            } else {
+                for(let k=0; k<users.length; k++) {
+                    option.push({email: users[k].user_email ,conversion_score: LessThanOrEqual(score)})
+                }
+            }
+            let user = await userRepository.find({where: option});
+            result[score] = user.length;
+        }
+    }
+
+    static getScore = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { type, region } = req.query;
+
+            let score = {};
+            let is_daejeon:boolean;
+            
+            if(region==="daejeon") is_daejeon = true;
+            else is_daejeon = false;
+            
+            await StatsController.countingUser(is_daejeon, type, score);
+            res.json(score);
+        } catch (e) {
             next(e);
         }
     }
