@@ -10,7 +10,7 @@ class ListController {
         try {
             let is_daejeon:boolean;
             const { region, type, status } = req.query;
-            let find = [0, 0], userList=[], resultList=[];
+            let find = [0, 0], userList=[];
             if(region === 'daejeon') {
                 is_daejeon = true;
                 find[0] = 1;
@@ -21,12 +21,13 @@ class ListController {
             if(type) find[1] = 1;
 
             userList = await ListController.find(is_daejeon, type , find);
+
             const manager = getConnectionManager().get('avengers');
             const userRepository = manager.getRepository(User);
 
-            let option, select;
+            let option, select, resultList = [];
             if(userList.length) {
-                await userList.forEach(async (user, index)=>{
+                userList.forEach(async (user, index)=>{
                     option = {};
                     option.email = user["user_email"];
                     if(status==="0") option["is_paid"] = false;
@@ -40,17 +41,21 @@ class ListController {
                         select.name = user.name;
                         if(user.is_daejeon) select.region = 'daejeon';
                         else select.region = 'nation';
+                        
                         select.type = user.apply_type;
-                        resultList.push(select);
+                        await resultList.push(select);
+                        
+                        if(resultList.length === userList.length) {
+                            resultList.sort(function(a,b) {
+                                if (a.receipt_code > b.receipt_code)
+                                    return 1;
+                                if (a.receipt_code < b.receipt_code)
+                                    return -1;
+                                return 0;
+                            })
+                            res.status(200).json(resultList);
+                        }
                     }
-                    resultList.sort(function(a,b) {
-                        if (a.receipt_code > b.receipt_code)
-                            return 1;
-                        if (a.receipt_code < b.receipt_code)
-                            return -1;
-                        return 0;
-                    })
-                    if(index == userList.length-1) res.status(200).json(resultList);
                 });
             } else {
                 res.status(200).json([]);
