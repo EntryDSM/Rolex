@@ -6,6 +6,7 @@ import { Ungraduated_application } from "../entity/Ungraduated";
 import { User } from "../entity/User";
 import e = require("express");
 
+//TODO : 지원율 최종 제출한 사람만 카운팅하기
 class StatsController {
     static getApplicants = async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -14,7 +15,8 @@ class StatsController {
             const gedRepository = manager.getRepository(Ged_application);
             const graduatedRepository = manager.getRepository(Graduated_application);
             const ungraduatedRepository = manager.getRepository(Ungraduated_application);
-            
+            const userRepository = manager.getRepository(User);
+
             let region: boolean;
             if(req.query.region == 'daejeon') {
                 region = true;
@@ -25,7 +27,8 @@ class StatsController {
                 select: ["user_email"],
                 where: {is_daejeon: region}
             });
-            let ged = await gedRepository.find({
+            let ged;
+            ged = await gedRepository.find({
                 select: ["user_email"],
                 where: {is_daejeon: region}
             });
@@ -33,7 +36,19 @@ class StatsController {
                 select: ["user_email"],
                 where: {is_daejeon: region}
             })
-            res.json({applicants: ungred.length+ged.length+gred.length});
+            let data;
+            data = ged.concat(ungred, gred);
+            let option = [];
+            
+            console.log(data);
+            for(let i=0; i<data.length; i++) {
+                option.push({email: data[i].user_email, is_final_submit: true});    
+            }
+            console.log(option);
+            let user = await userRepository.find({
+                where: option
+            });
+            res.json({applicants: user.length});
         } catch(e) {
             next(e);
         }
