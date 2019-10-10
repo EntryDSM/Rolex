@@ -31,6 +31,7 @@ class ListController {
                     option.email = user["user_email"];
                     if(status==="0") option["is_paid"] = false;
                     if(status==="1") option["is_printed_application_arrived"] = false;
+                    if(status==="2") option["is_final_submit"] = false;
                     select = await userRepository.findOne({
                         where: option,
                         select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid"],
