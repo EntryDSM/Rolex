@@ -6,7 +6,6 @@ import { Ungraduated_application } from "../entity/Ungraduated";
 import { User } from "../entity/User";
 import e = require("express");
 
-//TODO : 지원율 최종 제출한 사람만 카운팅하기
 class StatsController {
     static getApplicants = async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -39,15 +38,15 @@ class StatsController {
             let data;
             data = ged.concat(ungred, gred);
             let option = [];
-            
-            console.log(data);
             for(let i=0; i<data.length; i++) {
                 option.push({email: data[i].user_email, is_final_submit: true});    
             }
-            console.log(option);
-            let user = await userRepository.find({
-                where: option
-            });
+            let user = [];
+            if(option.length) {
+                user = await userRepository.find({
+                    where: option
+                });
+            }
             res.json({applicants: user.length});
         } catch(e) {
             next(e);
@@ -91,18 +90,34 @@ class StatsController {
         const gedRepository = manager.getRepository(Ged_application);
         const graduatedRepository = manager.getRepository(Graduated_application);
         const ungraduatedRepository = manager.getRepository(Ungraduated_application);
-        
-        let data = {ged:null, gred:null, ungred:null};
-        data.ged = await gedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type}
+        const userRepository = manager.getRepository(User);
+
+        let data;
+        let ged;
+        ged = await gedRepository.find({
+            where: {is_daejeon:is_daejeon, apply_type: type},
+            select: ["user_email"]
         });
-        data.gred = await graduatedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type}
+        let gred = await graduatedRepository.find({
+            where: {is_daejeon:is_daejeon, apply_type: type},
+            select: ["user_email"]
         });
-        data.ungred = await ungraduatedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type}
+        let ungred = await ungraduatedRepository.find({
+            where: {is_daejeon:is_daejeon, apply_type: type},
+            select: ["user_email"]
         })
-        return data.ged.length+data.gred.length+data.ungred.length;
+        data = ged.concat(ungred, gred);
+        let option = [];
+        for(let i=0; i<data.length; i++) {
+            option.push({email: data[i].user_email, is_final_submit: true});    
+        }
+        let user = []
+        if(option.length) {
+            user = await userRepository.find({
+                where: option
+            });
+        }
+        return user.length;
     }
 
     static getCompetition = async (req: Request, res: Response, next: NextFunction) => {
