@@ -7,4 +7,6 @@ router.get('/application', InfoController.getApplication);
 
 router.patch('/status', InfoController.changeStatus);
 
+router.get('/photo', InfoController.getPhoto);
+
 export default router;
