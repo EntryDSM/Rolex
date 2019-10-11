@@ -36,8 +36,6 @@ class ListController {
                         if(statusData[0]==="1") option["is_paid"] = false;
                         if(statusData[1]==="1") option["is_printed_application_arrived"] = false;
                         if(statusData[2]==="1") option["is_final_submit"] = false;   
-                        console.log(statusData);
-                        console.log(option);
                     }
                     select = await userRepository.findOne({
                         where: option,
@@ -74,7 +72,6 @@ class ListController {
                         }
                         cnt++;
                     }
-                    console.log(cnt);
                 });
             } else {
                 res.status(200).json([]);
