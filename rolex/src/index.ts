@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { createConnections, getConnection } from "typeorm";
 import express from "express";
+import fs from "fs";
 import cors from "cors";
 import helmet from "helmet";
 import * as dotenv from "dotenv";
@@ -11,6 +12,7 @@ import Err from './middleware/errorHandlers';
 
 createConnections()
     .then(async connections => {
+    !fs.existsSync('images') && fs.mkdirSync('images');
     const app = express();
     app.use(cors());
     app.use(helmet());
