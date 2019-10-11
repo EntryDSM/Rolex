@@ -27,12 +27,18 @@ class ListController {
 
             let option, select, resultList = [];
             if(userList.length) {
+                let cnt = 1;
                 userList.forEach(async (user, index)=>{
                     option = {};
                     option.email = user["user_email"];
-                    if(status==="0") option["is_paid"] = false;
-                    if(status==="1") option["is_printed_application_arrived"] = false;
-                    if(status==="2") option["is_final_submit"] = false;
+                    if(status) {
+                        let statusData = status.split('');
+                        if(statusData[0]==="1") option["is_paid"] = false;
+                        if(statusData[1]==="1") option["is_printed_application_arrived"] = false;
+                        if(statusData[2]==="1") option["is_final_submit"] = false;   
+                        console.log(statusData);
+                        console.log(option);
+                    }
                     select = await userRepository.findOne({
                         where: option,
                         select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid"],
@@ -44,8 +50,7 @@ class ListController {
                         
                         select.type = user.apply_type;
                         await resultList.push(select);
-                        
-                        if(resultList.length === userList.length) {
+                        if(cnt === userList.length) {
                             resultList.sort(function(a,b) {
                                 if (a.receipt_code > b.receipt_code)
                                     return 1;
@@ -55,7 +60,21 @@ class ListController {
                             })
                             res.status(200).json(resultList);
                         }
+                        cnt++;
+                    } else {
+                        if(cnt === userList.length) {
+                            resultList.sort(function(a,b) {
+                                if (a.receipt_code > b.receipt_code)
+                                    return 1;
+                                if (a.receipt_code < b.receipt_code)
+                                    return -1;
+                                return 0;
+                            })
+                            res.status(200).json(resultList);
+                        }
+                        cnt++;
                     }
+                    console.log(cnt);
                 });
             } else {
                 res.status(200).json([]);
