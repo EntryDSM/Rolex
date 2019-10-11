@@ -46,6 +46,9 @@ class ListController {
                         if(user.is_daejeon) select.region = 'daejeon';
                         else select.region = 'nation';
                         
+                        if(user.school_name) select.school_name = user.school_name;
+
+                        select.applicant_tel = user.applicant_tel;
                         select.type = user.apply_type;
                         await resultList.push(select);
                         if(cnt === userList.length) {
@@ -99,15 +102,15 @@ class ListController {
             where["apply_type"] = type;
         }
         ged = await gedRepository.find({
-            select: ["user_email", "name", "is_daejeon", "apply_type"],
+            select: ["user_email", "name", "is_daejeon", "apply_type", "applicant_tel"],
             where: where
         });
         gred = await graduatedRepository.find({
-            select: ["user_email", "name", "is_daejeon", "apply_type"],
+            select: ["user_email", "name", "is_daejeon", "apply_type", "school_name", "applicant_tel"],
             where: where
         });
         ungred = await ungraduatedRepository.find({
-            select: ["user_email", "name", "is_daejeon", "apply_type"],
+            select: ["user_email", "name", "is_daejeon", "apply_type", "school_name", "applicant_tel"],
             where: where
         })
         result = ged.concat(gred, ungred);
