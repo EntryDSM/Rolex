@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { getConnectionManager, Between, LessThanOrEqual } from "typeorm";
+import { getConnectionManager, Between, LessThanOrEqual, Like } from "typeorm";
 import { Ged_application } from "../entity/Ged";
 import { Graduated_application } from "../entity/Graduated";
 import { Ungraduated_application } from "../entity/Ungraduated";
 import { User } from "../entity/User";
-import e = require("express");
 
 class StatsController {
     static getApplicants = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,24 +15,26 @@ class StatsController {
             const ungraduatedRepository = manager.getRepository(Ungraduated_application);
             const userRepository = manager.getRepository(User);
 
-            let region: boolean;
-            if(req.query.region == 'daejeon') {
-                region = true;
+            let whereOption: object;
+            if(req.query.region === 'daejeon') {
+                whereOption = { is_daejeon : true };
+            } else if(req.query.region === 'nation') {
+                whereOption = { is_daejeon : false };
             } else {
-                region = false;
+                whereOption = null;
             }
             let ungred = await ungraduatedRepository.find({
                 select: ["user_email"],
-                where: {is_daejeon: region}
+                where: whereOption
             });
             let ged;
             ged = await gedRepository.find({
                 select: ["user_email"],
-                where: {is_daejeon: region}
+                where: whereOption
             });
             let gred = await graduatedRepository.find({
                 select: ["user_email"],
-                where: {is_daejeon: region}
+                where: whereOption
             })
             let data;
             data = ged.concat(ungred, gred);
@@ -161,17 +162,23 @@ class StatsController {
          
         let result = [];
 
+        let applyOption:object;
+        if(apply_type === "social") {
+            applyOption = {apply_type: Like("social*")};
+        } else {
+            applyOption = {apply_type: apply_type};
+        }
         let ged;
         ged = await gedRepository.find({
-            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            where: {is_daejeon: is_daejeon, applyOption},
             select: ["user_email"]
         });
         let gred = await graduatedRepository.find({
-            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            where: {is_daejeon: is_daejeon, applyOption},
             select: ["user_email"]
         });
         let ungred = await ungraduatedRepository.find({
-            where: {is_daejeon: is_daejeon, apply_type: apply_type},
+            where: {is_daejeon: is_daejeon, applyOption},
             select: ["user_email"]
         });
         result = ged.concat(gred, ungred);
