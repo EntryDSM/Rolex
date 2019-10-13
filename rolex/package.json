@@ -7,10 +7,12 @@
       "@types/body-parser": "^1.17.1",
       "@types/cors": "^2.8.6",
       "@types/dotenv": "^6.1.1",
+      "@types/exceljs": "^0.5.3",
       "@types/helmet": "0.0.44",
       "@types/jsonwebtoken": "^8.3.4",
-      "@types/node": "^8.0.29",
+      "@types/node": "^10.14.21",
       "@types/redis": "^2.8.14",
+      "exceljs": "^3.1.0",
       "ts-node": "3.3.0",
       "ts-node-dev": "^1.0.0-pre.43",
       "typescript": "3.3.3333"
