@@ -4,7 +4,9 @@ import { Ged_application } from "../entity/Ged";
 import { Graduated_application } from "../entity/Graduated";
 import { Ungraduated_application } from "../entity/Ungraduated";
 import { User } from "../entity/User";
+import fs from "fs";
 import Err from "../middleware/errorHandlers";
+import { dirname } from "path";
 
 class InfoController {
     static getApplication = async (req: Request, res: Response, next: NextFunction) => {
@@ -89,6 +91,25 @@ class InfoController {
                 await userRepository.save(user);
                 res.status(201).json("status change success");
             }
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static getPhoto = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            let filename = req.query.email;
+            
+            fs.readFile('images/'+filename, (err, data)=>{
+                if(err) {
+                    let err = new Err('not found photo');
+                    next(err)
+                } else {
+                    res.writeHead(200, {"Content-Type": "image/*"});
+                    res.write(data);
+                    res.end();
+                }
+            })
         } catch (e) {
             next(e);
         }
