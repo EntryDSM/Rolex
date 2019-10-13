@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getConnectionManager, Like } from "typeorm";
+import * as Excel from "exceljs";
 import { User } from "../entity/User";
 import { Ged_application } from "../entity/Ged";
 import { Graduated_application } from "../entity/Graduated";
@@ -99,7 +100,7 @@ class ListController {
             where["is_daejeon"] = is_daejeon;
         } 
         if(flag[1] === 1) {
-            if(type = "social") {
+            if(type === "social") {
                 where["apply_type"] = Like("social%");
             } else {
                 where["apply_type"] = type;
