@@ -170,15 +170,15 @@ class StatsController {
         }
         let ged;
         ged = await gedRepository.find({
-            where: {is_daejeon: is_daejeon, applyOption},
+            where: Object.assign({is_daejeon: is_daejeon},applyOption),
             select: ["user_email"]
         });
         let gred = await graduatedRepository.find({
-            where: {is_daejeon: is_daejeon, applyOption},
+            where: Object.assign({is_daejeon: is_daejeon},applyOption),
             select: ["user_email"]
         });
         let ungred = await ungraduatedRepository.find({
-            where: {is_daejeon: is_daejeon, applyOption},
+            where: Object.assign({is_daejeon: is_daejeon},applyOption),
             select: ["user_email"]
         });
         result = ged.concat(gred, ungred);
@@ -190,20 +190,23 @@ class StatsController {
         const userRepository = manager.getRepository(User);
 
         let users = await StatsController.getUserList(region, type);
-        
         for(let score=150; score>60; score-=10) {
-            let option = [];
-            if(score > 70) {
-                for(let k=0; k<users.length; k++) {
-                    option.push({email: users[k].user_email ,conversion_score: Between(score-9, score)})
+            if(users.length) {
+                    let option = [];
+                if(score > 70) {
+                    for(let k=0; k<users.length; k++) {
+                        option.push({is_final_submit: true, email: users[k].user_email ,conversion_score: Between(score-9, score)})
+                    }
+                } else {
+                    for(let k=0; k<users.length; k++) {
+                        option.push({is_final_submit: true, email: users[k].user_email ,conversion_score: LessThanOrEqual(score)})
+                    }
                 }
+                let user = await userRepository.find({where: option});
+                result[score] = user.length;
             } else {
-                for(let k=0; k<users.length; k++) {
-                    option.push({email: users[k].user_email ,conversion_score: LessThanOrEqual(score)})
-                }
+                result[score] = users.length;
             }
-            let user = await userRepository.find({where: option});
-            result[score] = user.length;
         }
     }
 
