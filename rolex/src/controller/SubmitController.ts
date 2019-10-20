@@ -11,7 +11,7 @@ class SubmitController {
                 where: {email: req.query.email}
             });
             if(user) {
-                user.is_final_submit = false;
+                user.is_final_submit = !user.is_final_submit;
                 await userRepository.save(user);
                 res.status(204).json({message: "Final Submit Cancel succeed."});
             } 
