@@ -1,12 +1,13 @@
 import { Router } from "express"
 import InfoController from "../controller/InfoController";
+import { checkAdmin } from "../middleware/checkJwt";
 
 const router = Router();
 
-router.get('/application', InfoController.getApplication);
+router.get('/application', checkAdmin, InfoController.getApplication);
 
-router.patch('/status', InfoController.changeStatus);
+router.patch('/status', checkAdmin, InfoController.changeStatus);
 
-router.get('/photo', InfoController.getPhoto);
+router.get('/photo', checkAdmin , InfoController.getPhoto);
 
 export default router;
