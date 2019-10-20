@@ -49,7 +49,7 @@ export class Graduated_application {
     graduated_year: string;
 
     @Column({ length: "10" })
-    school_name: string;
+    school_code: string;
 
     @Column({ length: "11" })
     school_tel: string;
@@ -95,4 +95,16 @@ export class Graduated_application {
 
     @Column({ length: "1600" })
     study_plan: string;
+
+    @Column("decimal", { precision: 10, scale: 5 })
+    first_grade_score: number;
+
+    @Column("decimal", { precision: 10, scale: 5 })
+    second_grade_score: number;
+
+    @Column("decimal", { precision: 10, scale: 5 })
+    third_grade_score: number;
+
+    @Column({ length: "50" })
+    school_name: string;
 }
