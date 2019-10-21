@@ -40,7 +40,7 @@ class ListController {
                     }
                     select = await userRepository.findOne({
                         where: option,
-                        select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid"],
+                        select: ["email", "receipt_code", "is_printed_application_arrived", "is_final_submit", "is_paid", "exam_code"],
                     })
                     if(select) {
                         select.name = user.name;
@@ -171,6 +171,8 @@ class ListController {
                 { header: '결과', key: 'period_cut', width: 20 },
                 { header: '출석점수', key: 'attendance_score', width: 20 },
                 { header: '1차전형 총점', key: 'final', width: 20 },
+                { header: '자기소개서', key: 'self_introduction', width: 100 },
+                { header: '학업계획서', key: 'study_plan', width: 100 },
             ]
             let subjects = [{korean: "국어"}, {social: "사회"}, {history: "역사"}, {math: "수학"}, {science: "과학"}, {tech_and_home: "기술가정"}, {english: "영어"}];
             let cnt = 0;
@@ -221,8 +223,9 @@ class ListController {
         const userRepository = manager.getRepository(User);
 
         for(let i=0; i<emailList.length; i++) {
-            let data = await userRepository.findOne({email: emailList[i]});
-            await result.push(data);
+            let data = await userRepository.findOne({email: emailList[i], is_final_submit:true});
+            if(data)
+                await result.push(data);
         }
         return result;
     }
@@ -430,7 +433,8 @@ class ListController {
                         await sheet.addRow(Object.assign({exam_code: exam_code, receipt_code: receipt_code, address: userData[0].address, region: region, apply_type: apply_type, 
                             name: userData[0].name, birth_day: userData[0].birth_date ,background: background, gender:gender, graduated_year: graduated_year,
                             phone: userData[0].applicant_tel, parent_name: userData[0].parent_name, parent_tel: userData[0].parent_tel, conversion: user.conversion_score,
-                            volunteer_score: user.volunteer_score, attendance_score: user.attendance_score, final: user.final_score, additional_type: additional_type
+                            volunteer_score: user.volunteer_score, attendance_score: user.attendance_score, final: user.final_score, additional_type: additional_type, 
+                            study_plan: userData[0].study_plan, self_introduction: userData[0].self_introduction
                             }, option));
                         count++;
                     }
