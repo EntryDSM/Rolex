@@ -392,12 +392,12 @@ class ListController {
                         }
                     }
 
-                    if(String(count).length === 1) 
-                        receipt_code = receipt_code + "00" + String(count);
-                    else if(String(count).length === 2)
-                        receipt_code = receipt_code + "0" + String(count);
+                    if(String(userList[i].receipt_code).length === 1) 
+                        receipt_code = receipt_code + "00" + String(userList[i].receipt_code);
+                    else if(String(userList[i].receipt_code).length === 2)
+                        receipt_code = receipt_code + "0" + String(userList[i].receipt_code);
                     else 
-                        receipt_code = receipt_code + String(count); 
+                        receipt_code = receipt_code + String(userList[i].receipt_code); 
 
                     if(userData[0].sex === "MALE") gender = "남";
                     else gender = "여";
@@ -412,8 +412,8 @@ class ListController {
                             student_class = userData[0].student_number.split('');
                             option["class"] = student_class[1]+student_class[2];
                             option["first"] = userData[0].first_grade_score;
-                            option["second"] = userData[0].first_grade_score;
-                            option["third"] = userData[0].first_grade_score;
+                            option["second"] = userData[0].second_grade_score;
+                            option["third"] = userData[0].third_grade_score;
                             option["volunteer_time"] = userData[0].volunteer_time;
                             option["full_cut"] = userData[0].full_cut_count;
                             option["period_cut"] = userData[0].period_cut_count;
