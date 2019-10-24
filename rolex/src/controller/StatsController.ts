@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { getConnectionManager, Between, LessThanOrEqual, Like } from "typeorm";
+import { getConnectionManager, Between, LessThanOrEqual, Like, MoreThan } from "typeorm";
 import { Ged_application } from "../entity/Ged";
 import { Graduated_application } from "../entity/Graduated";
 import { Ungraduated_application } from "../entity/Ungraduated";
@@ -95,16 +95,24 @@ class StatsController {
 
         let data;
         let ged;
+        let typeOption = {};
+        typeOption["is_daejeon"] = is_daejeon;
+        if(type === "SOCIAL") {
+            typeOption["apply_type"] = Like("social%");
+        } else {
+            typeOption["apply_type"] = type;
+        }
+
         ged = await gedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type},
+            where: typeOption,
             select: ["user_email"]
         });
         let gred = await graduatedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type},
+            where: typeOption,
             select: ["user_email"]
         });
         let ungred = await ungraduatedRepository.find({
-            where: {is_daejeon:is_daejeon, apply_type: type},
+            where: typeOption,
             select: ["user_email"]
         })
         data = ged.concat(ungred, gred);
@@ -162,24 +170,25 @@ class StatsController {
          
         let result = [];
 
-        let applyOption:object;
+        let applyOption = {}
         if(apply_type === "social") {
-            applyOption = {apply_type: Like("social*")};
+            applyOption["apply_type"] = Like("social%");
         } else {
-            applyOption = {apply_type: apply_type};
+            applyOption["apply_type"] = apply_type;
         }
+        applyOption["is_daejeon"] = is_daejeon;
         let ged;
         ged = await gedRepository.find({
-            where: Object.assign({is_daejeon: is_daejeon},applyOption),
-            select: ["user_email"]
+            select: ["user_email"],
+            where: applyOption,
         });
         let gred = await graduatedRepository.find({
-            where: Object.assign({is_daejeon: is_daejeon},applyOption),
-            select: ["user_email"]
+            select: ["user_email"],
+            where: applyOption,
         });
         let ungred = await ungraduatedRepository.find({
-            where: Object.assign({is_daejeon: is_daejeon},applyOption),
-            select: ["user_email"]
+            select: ["user_email"],
+            where: applyOption,
         });
         result = ged.concat(gred, ungred);
         return result;
@@ -195,7 +204,7 @@ class StatsController {
                     let option = [];
                 if(score > 70) {
                     for(let k=0; k<users.length; k++) {
-                        option.push({is_final_submit: true, email: users[k].user_email ,conversion_score: Between(score-9, score)})
+                        option.push({is_final_submit: true, email: users[k].user_email ,conversion_score: Between(score-10+Number.MIN_VALUE, score)})
                     }
                 } else {
                     for(let k=0; k<users.length; k++) {
