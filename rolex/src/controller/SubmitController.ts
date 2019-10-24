@@ -13,7 +13,7 @@ class SubmitController {
             if(user) {
                 user.is_final_submit = !user.is_final_submit;
                 await userRepository.save(user);
-                res.status(204).json({message: "Final Submit Cancel succeed."});
+                res.status(200).json({message: "Final Submit Cancel succeed."});
             } 
         } catch (e) {
             next(e);
