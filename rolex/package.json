@@ -20,11 +20,11 @@
    "dependencies": {
       "redis": "^2.8.0",
       "bcryptjs": "^2.4.3",
-      "body-parser": "^1.18.1",
+      "body-parser": "^1.20.1",
       "class-validator": "^0.10.1",
       "cors": "^2.8.5",
       "dotenv": "^8.1.0",
-      "express": "^4.15.4",
+      "express": "^4.18.2",
       "helmet": "^3.21.1",
       "jsonwebtoken": "^8.5.1",
       "mysql": "^2.14.1",
